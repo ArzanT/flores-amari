@@ -1,100 +1,105 @@
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  overflow: hidden; 
-  font-family: 'Dancing Script', cursive;
-}
-
-.container {
+/* Contenedor padre que centra el contenido y esconde el desbordamiento */
+.contenedor-principal {
   position: relative;
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
+  background-color: #111; /* Color de fondo general de tu web */
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #fffbeb;
 }
 
-.particles-bg {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  z-index: 1;
-  pointer-events: none; /* Para que no bloqueen los clics */
-}
-
-.content {
+/* ---------------------------------------------------
+   CAPA DE CONTENIDO (La que contiene tu mensaje)
+------------------------------------------------------ */
+.capa-contenido {
   position: relative;
-  z-index: 10;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%; height: 100%;
-}
-
-.start-button {
-  padding: 1rem 3rem;
-  font-size: 2.5rem;
-  font-family: 'Dancing Script', cursive;
-  color: #8B4513;
-  background: rgba(255, 255, 255, 0.6);
-  border: 3px solid #FFD700;
-  border-radius: 50px;
-  cursor: pointer;
-  box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3);
-  backdrop-filter: blur(8px);
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
-  z-index: 20;
-}
-
-.start-button:hover {
-  box-shadow: 0 8px 40px rgba(255, 215, 0, 0.6);
-  border-color: #DAA520;
-  outline: none;
-}
-
-.card {
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(10px);
-  padding: 3rem 2rem;
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(255, 215, 0, 0.2);
+  z-index: 10; /* Z-index alto para que esté SIEMPRE por encima de las flores */
   text-align: center;
-  max-width: 90%;
-  width: 500px;
+  color: white;
+  
+  /* Opcional: Un fondo de cristal (glassmorphism) para que el texto se lea 
+     bien aunque pasen animaciones por detrás */
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  padding: 2.5rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.message {
-  color: #8B4513;
-  font-size: 2.8rem;
-  line-height: 1.3;
-  text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
-}
-
-.flower-wrapper {
+/* ---------------------------------------------------
+   CAPA DE ANIMACIONES (Flores y Pétalos de fondo)
+------------------------------------------------------ */
+.capa-animaciones {
   position: absolute;
-  z-index: 5;
-  pointer-events: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* VITAL: Permite hacer click a los botones que estén debajo */
+  z-index: 1; /* Se mantiene detrás de tu contenido */
 }
 
-/* 3 Ritmos diferentes para que floten natural */
-.float-anim-1 { animation: float1 4s ease-in-out infinite; }
-.float-anim-2 { animation: float2 5s ease-in-out infinite alternate; }
-.float-anim-3 { animation: float3 4.5s ease-in-out infinite reverse; }
-
-@keyframes float1 {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-15px) rotate(3deg); }
+/* --- FLORES --- */
+.contenedor-flores {
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
-@keyframes float2 {
-  0%, 100% { transform: translateY(0px) rotate(-2deg); }
-  50% { transform: translateY(-10px) rotate(2deg); }
+.flor {
+  position: absolute;
+  font-size: 2.5rem;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
 }
 
-@keyframes float3 {
-  0%, 100% { transform: translateY(0px) scale(1); }
-  50% { transform: translateY(-12px) scale(1.05); }
+@keyframes flotar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-30px); }
+}
+
+@keyframes balanceo {
+  0%, 100% { transform: rotate(-15deg); }
+  50% { transform: rotate(15deg); }
+}
+
+@keyframes latido {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+/* --- LLUVIA DE PÉTALOS --- */
+.contenedor-petalos {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.petalo {
+  position: absolute;
+  top: -10%;
+  width: 16px;
+  height: 16px;
+  background-color: #FFD700;
+  border-radius: 15px 0 15px 0; /* Truco CSS para forma de pétalo nativa */
+  opacity: 0.8;
+  box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  animation-name: lluviaPetalos;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes lluviaPetalos {
+  0% {
+    transform: translateY(0) rotate(0deg) translateX(0);
+    opacity: 0;
+  }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% {
+    transform: translateY(110vh) rotate(360deg) translateX(80px);
+    opacity: 0;
+  }
 }
