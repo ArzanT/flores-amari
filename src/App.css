@@ -1,35 +1,104 @@
-/* Contenedor padre que centra el contenido y esconde el desbordamiento */
+/* Contenedor general */
 .contenedor-principal {
   position: relative;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background-color: #111; /* Color de fondo general de tu web */
+  background-color: #1a1a1a; /* Fondo oscuro elegante */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ---------------------------------------------------
+   CAPA DE INICIO (El botón)
+------------------------------------------------------ */
+.capa-inicio {
+  z-index: 50;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* ---------------------------------------------------
-   CAPA DE CONTENIDO (La que contiene tu mensaje)
------------------------------------------------------- */
-.capa-contenido {
-  position: relative;
-  z-index: 10; /* Z-index alto para que esté SIEMPRE por encima de las flores */
-  text-align: center;
-  color: white;
-  
-  /* Opcional: Un fondo de cristal (glassmorphism) para que el texto se lea 
-     bien aunque pasen animaciones por detrás */
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
-  padding: 2.5rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.btn-iniciar {
+  background: linear-gradient(135deg, #ffd700, #ffaa00);
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+  transition: transform 0.2s;
+}
+
+.btn-iniciar:hover {
+  transform: scale(1.05);
+}
+
+/* Animación de latido mientras espera el click */
+.animacion-latido {
+  animation: latidoBoton 2s infinite;
+}
+
+@keyframes latidoBoton {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); box-shadow: 0 4px 25px rgba(255, 215, 0, 0.6); }
+}
+
+/* Animación de rebote y desaparición al hacer click */
+.animacion-rebote-salida {
+  animation: reboteSalida 0.5s forwards ease-in;
+}
+
+@keyframes reboteSalida {
+  0% { transform: scale(1); opacity: 1; }
+  30% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0); opacity: 0; }
+}
+
+/* Clase general para que el texto y las flores aparezcan suavemente */
+.aparecer-suave {
+  animation: fadeIn 2s forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* ---------------------------------------------------
-   CAPA DE ANIMACIONES (Flores y Pétalos de fondo)
+   CAPA DE CONTENIDO (El mensaje)
+------------------------------------------------------ */
+.capa-contenido {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  color: #fff;
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(8px);
+  padding: 3rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.capa-contenido h1 {
+  color: #ffd700;
+  font-size: 3rem;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.mensaje-principal {
+  font-size: 1.5rem;
+  font-style: italic;
+}
+
+/* ---------------------------------------------------
+   CAPA DE ANIMACIONES (Flores y Pétalos)
 ------------------------------------------------------ */
 .capa-animaciones {
   position: absolute;
@@ -37,11 +106,11 @@
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none; /* VITAL: Permite hacer click a los botones que estén debajo */
-  z-index: 1; /* Se mantiene detrás de tu contenido */
+  pointer-events: none;
+  z-index: 1;
 }
 
-/* --- FLORES --- */
+/* --- FLORES Y SUS NUEVAS ANIMACIONES --- */
 .contenedor-flores {
   position: absolute;
   width: 100%;
@@ -50,24 +119,39 @@
 
 .flor {
   position: absolute;
-  font-size: 2.5rem;
+  font-size: 3rem;
   animation-iteration-count: infinite;
   animation-timing-function: ease-in-out;
+  /* El drop-shadow en CSS funciona genial para emojis/svgs */
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); 
 }
 
 @keyframes flotar {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-30px); }
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-40px) rotate(10deg); }
 }
 
 @keyframes balanceo {
-  0%, 100% { transform: rotate(-15deg); }
-  50% { transform: rotate(15deg); }
+  0%, 100% { transform: translateX(0) rotate(-15deg); }
+  50% { transform: translateX(30px) rotate(15deg); }
 }
 
 @keyframes latido {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.2); }
+  50% { transform: scale(1.3); }
+}
+
+@keyframes zigzag {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(20px, -20px); }
+  50% { transform: translate(0, -40px); }
+  75% { transform: translate(-20px, -20px); }
+}
+
+@keyframes caidaLenta {
+  0% { transform: translateY(-20px); opacity: 0.5; }
+  50% { transform: translateY(20px); opacity: 1; }
+  100% { transform: translateY(-20px); opacity: 0.5; }
 }
 
 /* --- LLUVIA DE PÉTALOS --- */
@@ -80,12 +164,12 @@
 .petalo {
   position: absolute;
   top: -10%;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   background-color: #FFD700;
-  border-radius: 15px 0 15px 0; /* Truco CSS para forma de pétalo nativa */
+  border-radius: 15px 0 15px 0;
   opacity: 0.8;
-  box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
   animation-name: lluviaPetalos;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
@@ -99,7 +183,7 @@
   10% { opacity: 1; }
   90% { opacity: 1; }
   100% {
-    transform: translateY(110vh) rotate(360deg) translateX(80px);
+    transform: translateY(110vh) rotate(720deg) translateX(100px);
     opacity: 0;
   }
 }
