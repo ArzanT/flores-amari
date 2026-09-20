@@ -1,10 +1,9 @@
-/* Contenedor general */
 .contenedor-principal {
   position: relative;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background-color: #1a1a1a; /* Fondo oscuro elegante */
+  background-color: #111; /* Color base oscuro por si el video tarda en cargar */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,61 +11,114 @@
 }
 
 /* ---------------------------------------------------
-   CAPA DE INICIO (El botón)
+   FONDO DE VIDEO Y DESENFOQUE
+------------------------------------------------------ */
+.video-fondo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translateX(-50%) translateY(-50%);
+  z-index: 0;
+  object-fit: cover; /* Asegura que cubra toda la pantalla sin deformarse */
+}
+
+.capa-desenfoque {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  /* Oscurece un poco y desenfoca el video de fondo */
+  background-color: rgba(0, 0, 0, 0.4); 
+  backdrop-filter: blur(8px);
+}
+
+/* ---------------------------------------------------
+   CAPA DE INICIO (El botón 3D)
 ------------------------------------------------------ */
 .capa-inicio {
-  z-index: 50;
+  position: relative;
+  z-index: 50; 
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* El contenedor del botón ahora es invisible y solo estructura el contenido */
 .btn-iniciar {
-  background: linear-gradient(135deg, #ffd700, #ffaa00);
-  color: #333;
-  font-size: 1.5rem;
-  font-weight: bold;
-  padding: 15px 30px;
+  background: transparent;
   border: none;
-  border-radius: 50px;
+  padding: 0;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-  transition: transform 0.2s;
+  outline: none;
+  -webkit-tap-highlight-color: transparent; /* Quita el cuadro azul feo en móviles */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }
 
-.btn-iniciar:hover {
+/* La imagen de tu SVG */
+.btn-imagen {
+  width: 400px; /* Ajusta el tamaño según necesites */
+  height: auto;
+  /* Transición rápida para que el clic se sienta instantáneo */
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), filter 0.1s ease;
+  /* Sombra inicial grande para dar la altura 3D */
+  filter: drop-shadow(0 15px 15px rgba(0, 0, 0, 0.6));
+}
+
+.texto-invitacion {
+  color: #ffd700;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+  transition: opacity 0.2s;
+}
+
+/* EFECTO HOVER (El mouse por encima) */
+.btn-iniciar:hover .btn-imagen {
   transform: scale(1.05);
+  filter: drop-shadow(0 20px 20px rgba(0, 0, 0, 0.7));
 }
 
-/* Animación de latido mientras espera el click */
-.animacion-latido {
-  animation: latidoBoton 2s infinite;
+/* EFECTO ACTIVE (El hundimiento al hacer click) */
+.btn-iniciar:active .btn-imagen {
+  /* Se hace un poco más pequeño y baja 8 pixeles simulando presión física */
+  transform: scale(0.92) translateY(8px);
+  /* La sombra se reduce drásticamente y se oscurece porque el botón tocó el fondo */
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.9));
+}
+
+/* El texto desaparece momentáneamente al hacer el clic para mayor inmersión */
+.btn-iniciar:active .texto-invitacion {
+  opacity: 0.5;
+}
+
+/* Animación de latido (Afecta a todo el contenedor) */
+.animacion-latido { 
+  animation: latidoBoton 2.5s infinite ease-in-out; 
 }
 
 @keyframes latidoBoton {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); box-shadow: 0 4px 25px rgba(255, 215, 0, 0.6); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
-/* Animación de rebote y desaparición al hacer click */
-.animacion-rebote-salida {
-  animation: reboteSalida 0.5s forwards ease-in;
+/* Animación de salida al hacer clic */
+.animacion-rebote-salida { 
+  animation: reboteSalida 0.5s forwards ease-in; 
 }
 
 @keyframes reboteSalida {
   0% { transform: scale(1); opacity: 1; }
-  30% { transform: scale(1.2); opacity: 1; }
+  30% { transform: scale(1.1); opacity: 1; }
   100% { transform: scale(0); opacity: 0; }
-}
-
-/* Clase general para que el texto y las flores aparezcan suavemente */
-.aparecer-suave {
-  animation: fadeIn 2s forwards;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 /* ---------------------------------------------------
@@ -74,27 +126,28 @@
 ------------------------------------------------------ */
 .capa-contenido {
   position: relative;
-  z-index: 10;
+  z-index: 20; /* Mayor que las animaciones */
   text-align: center;
   color: #fff;
-  background: rgba(20, 20, 20, 0.6);
-  backdrop-filter: blur(8px);
-  padding: 3rem;
+  background: rgba(10, 10, 10, 0.5);
+  backdrop-filter: blur(10px);
+  padding: 3rem 4rem;
   border-radius: 20px;
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
 }
 
 .capa-contenido h1 {
   color: #ffd700;
-  font-size: 3rem;
+  font-size: 3.5rem;
   margin-bottom: 10px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
 
 .mensaje-principal {
   font-size: 1.5rem;
   font-style: italic;
+  color: #f0f0f0;
 }
 
 /* ---------------------------------------------------
@@ -107,69 +160,87 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 1;
+  z-index: 10; /* Sobre el video y el desenfoque */
 }
 
-/* --- FLORES Y SUS NUEVAS ANIMACIONES --- */
+/* --- FLORES (Z-index base) --- */
 .contenedor-flores {
   position: absolute;
   width: 100%;
   height: 100%;
+  z-index: 1; 
 }
 
 .flor {
   position: absolute;
-  font-size: 3rem;
+  font-size: 3.5rem;
   animation-iteration-count: infinite;
   animation-timing-function: ease-in-out;
-  /* El drop-shadow en CSS funciona genial para emojis/svgs */
-  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); 
+  filter: drop-shadow(0 5px 8px rgba(0,0,0,0.5)); 
 }
 
+/* VARIEDAD DE ANIMACIONES DE FLORES */
 @keyframes flotar {
   0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-40px) rotate(10deg); }
+  50% { transform: translateY(-50px) rotate(15deg); }
 }
 
 @keyframes balanceo {
-  0%, 100% { transform: translateX(0) rotate(-15deg); }
-  50% { transform: translateX(30px) rotate(15deg); }
+  0%, 100% { transform: translateX(0) rotate(-20deg); }
+  50% { transform: translateX(40px) rotate(20deg); }
 }
 
 @keyframes latido {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.3); }
+  50% { transform: scale(1.4); }
 }
 
 @keyframes zigzag {
   0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(20px, -20px); }
-  50% { transform: translate(0, -40px); }
-  75% { transform: translate(-20px, -20px); }
+  25% { transform: translate(30px, -30px); }
+  50% { transform: translate(0, -60px); }
+  75% { transform: translate(-30px, -30px); }
 }
 
 @keyframes caidaLenta {
-  0% { transform: translateY(-20px); opacity: 0.5; }
-  50% { transform: translateY(20px); opacity: 1; }
-  100% { transform: translateY(-20px); opacity: 0.5; }
+  0% { transform: translateY(-30px); opacity: 0.7; }
+  50% { transform: translateY(30px); opacity: 1; }
+  100% { transform: translateY(-30px); opacity: 0.7; }
 }
 
-/* --- LLUVIA DE PÉTALOS --- */
+@keyframes rotacionContinua {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes vaiven {
+  0%, 100% { transform: translateX(-40px) translateY(10px); }
+  50% { transform: translateX(40px) translateY(-10px); }
+}
+
+@keyframes espiral {
+  0% { transform: rotate(0deg) translateX(15px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(15px) rotate(-360deg); }
+}
+
+/* --- LLUVIA DE PÉTALOS (Z-index mayor para que caigan por encima) --- */
 .contenedor-petalos {
   position: absolute;
   width: 100%;
   height: 100%;
+  z-index: 5; /* Mayor que .contenedor-flores */
 }
 
 .petalo {
   position: absolute;
   top: -10%;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   background-color: #FFD700;
   border-radius: 15px 0 15px 0;
-  opacity: 0.8;
-  box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+  opacity: 0.9;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
   animation-name: lluviaPetalos;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
@@ -180,10 +251,10 @@
     transform: translateY(0) rotate(0deg) translateX(0);
     opacity: 0;
   }
-  10% { opacity: 1; }
+  5% { opacity: 1; }
   90% { opacity: 1; }
   100% {
-    transform: translateY(110vh) rotate(720deg) translateX(100px);
+    transform: translateY(115vh) rotate(1080deg) translateX(150px);
     opacity: 0;
   }
 }
