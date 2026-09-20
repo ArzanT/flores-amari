@@ -109,3 +109,96 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* Contenedor principal para evitar scroll horizontal/vertical por las animaciones */
+.contenedor-principal {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #111; /* Ajusta al color de fondo de tu web */
+}
+
+/* ---------------------------------------------------
+   ESTILOS DE LAS FLORES (Múltiples animaciones)
+------------------------------------------------------ */
+.contenedor-flores {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Crucial para no bloquear los clicks en la web */
+  z-index: 1;
+}
+
+.flor {
+  position: absolute;
+  font-size: 2.5rem; /* Tamaño base si usas emojis/fuentes */
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+/* Animación 1: Flotar de arriba a abajo */
+@keyframes flotar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-30px); }
+}
+
+/* Animación 2: Balanceo lateral simulando viento */
+@keyframes balanceo {
+  0%, 100% { transform: rotate(-15deg); }
+  50% { transform: rotate(15deg); }
+}
+
+/* Animación 3: Efecto de latido o respiración */
+@keyframes latido {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+/* ---------------------------------------------------
+   ESTILOS DE LA LLUVIA DE PÉTALOS
+------------------------------------------------------ */
+.contenedor-petalos {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.petalo {
+  position: absolute;
+  top: -10%; /* Comienzan fuera de la pantalla por arriba */
+  width: 16px;
+  height: 16px;
+  background-color: #FFD700; /* Amarillo vivo */
+  /* TRUCO CSS: Esta combinación de border-radius crea una forma de hoja/pétalo perfecta */
+  border-radius: 15px 0 15px 0; 
+  opacity: 0.8;
+  box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); /* Brillo sutil */
+  animation-name: lluviaPetalos;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear; /* Linear para que la caída sea constante */
+}
+
+/* Animación de caída con rotación simulando el viento */
+@keyframes lluviaPetalos {
+  0% {
+    transform: translateY(0) rotate(0deg) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1; /* Aparece suavemente */
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg) translateX(80px);
+    opacity: 0; /* Desaparece suavemente al llegar abajo */
+  }
+}

@@ -73,14 +73,34 @@ const positions = [
 ];
 
 function App() {
-  const [init, setInit] = useState(false);
-  const [isStarted, setIsStarted] = useState(false);
-  const audioRef = useRef(null);
+  const [flores, setFlores] = useState([]);
+  const [petalos, setPetalos] = useState([]);
 
   useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine);
-    }).then(() => setInit(true));
+    // 1. Generar 120 flores con posiciones y animaciones aleatorias
+    const cantidadFlores = 120;
+    const tiposAnimacion = ['flotar', 'balanceo', 'latido'];
+    
+    const nuevasFlores = Array.from({ length: cantidadFlores }).map((_, i) => ({
+      id: i,
+      left: `${Math.random() * 95}vw`, // Posición X aleatoria
+      top: `${Math.random() * 95}vh`,  // Posición Y aleatoria
+      animationName: tiposAnimacion[Math.floor(Math.random() * tiposAnimacion.length)],
+      animationDuration: `${Math.random() * 4 + 3}s`, // Entre 3s y 7s
+      animationDelay: `${Math.random() * 2}s`,
+      scale: Math.random() * 0.6 + 0.4 // Tamaños entre 0.4x y 1x
+    }));
+    setFlores(nuevasFlores);
+
+    // 2. Generar 80 pétalos para la lluvia
+    const cantidadPetalos = 80;
+    const nuevosPetalos = Array.from({ length: cantidadPetalos }).map((_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}vw`,
+      animationDuration: `${Math.random() * 4 + 4}s`, // Caída entre 4s y 8s
+      animationDelay: `${Math.random() * 5}s`, // Retraso para que no caigan todos a la vez
+    }));
+    setPetalos(nuevosPetalos);
   }, []);
 
   // Configuración MEJORADA de la lluvia de pétalos
@@ -114,64 +134,43 @@ const particlesOptions = {
   };
 
   return (
-    <div className="container">
-      <audio ref={audioRef} src="/cancion.mp3" loop />
-      {init && <Particles id="tsparticles" options={particlesOptions} className="particles-bg" />}
+    <div className="contenedor-principal">
+      {/* Tu contenido central (títulos, cartas, etc.) puede ir aquí */}
       
-      <div className="content">
-        <AnimatePresence mode="wait">
-          {!isStarted ? (
-            <motion.button
-              key="start-btn"
-              className="start-button"
-              onClick={handleStart}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5, filter: "blur(10px)" }}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Click aquí 💛
-            </motion.button>
-          ) : (
-            <motion.div 
-              key="main-card"
-              className="card"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1 }}
-            >
-              <motion.h1 
-                className="message"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 1 }}
-              >
-                feliz 21, aqui no se marchitaran tus flores amarillas xd
-              </motion.h1>
-            </motion.div>
-          )}
-        </AnimatePresence>
+      {/* Renderizado de la lluvia de pétalos */}
+      <div className="contenedor-petalos">
+        {petalos.map((petalo) => (
+          <div
+            key={`petalo-${petalo.id}`}
+            className="petalo"
+            style={{
+              left: petalo.left,
+              animationDuration: petalo.animationDuration,
+              animationDelay: petalo.animationDelay,
+            }}
+          ></div>
+        ))}
+      </div>
 
-        {isStarted && positions.map((pos, index) => {
-          const anim = animations[index % animations.length];
-          const FlowerComponent = FlowerTypes[index % FlowerTypes.length];
-          // Asignamos una clase CSS aleatoria para que floten a distinto ritmo
-          const floatClass = `float-anim-${(index % 3) + 1}`; 
-
-          return (
-            <motion.div
-              key={`flower-${index}`}
-              className={`flower-wrapper`}
-              style={pos}
-              initial={anim.initial}
-              animate={anim.animate}
-              transition={{ ...anim.transition, delay: 0.8 + (index * 0.15) }} // Aparecen más rápido en cascada
-            >
-              <FlowerComponent className={`flower-svg ${floatClass}`} />
-            </motion.div>
-          );
-        })}
+      {/* Renderizado de las 120 flores dinámicas */}
+      <div className="contenedor-flores">
+        {flores.map((flor) => (
+          <div
+            key={`flor-${flor.id}`}
+            className="flor"
+            style={{
+              left: flor.left,
+              top: flor.top,
+              animationName: flor.animationName,
+              animationDuration: flor.animationDuration,
+              animationDelay: flor.animationDelay,
+              transform: `scale(${flor.scale})` // Escala inicial
+            }}
+          >
+            {/* AQUÍ REEMPLAZA ESTE EMOJI POR TU COMPONENTE, IMAGEN O SVG DE FLOR ACTUAL */}
+            🌻
+          </div>
+        ))}
       </div>
     </div>
   );
